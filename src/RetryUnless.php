@@ -240,6 +240,12 @@ class RetryUnless implements LoggerAwareInterface
         }
     }
 
+    public function cancel($reason = null)
+    {
+        $this->removeEventualTimer();
+        $this->rejectEventualDeferred($reason ?: 'cancelled');
+    }
+
     public function __destruct()
     {
         $this->removeEventualTimer();
