@@ -236,7 +236,7 @@ class RetryUnless implements LoggerAwareInterface
         if ($this->deferred !== null) {
             $deferred = $this->deferred;
             $this->deferred = null;
-            $deferred->reject($reason);
+            $deferred->reject(new Exception($reason));
         }
     }
 
@@ -249,7 +249,9 @@ class RetryUnless implements LoggerAwareInterface
     public function __destruct()
     {
         $this->removeEventualTimer();
-        $this->rejectEventualDeferred('RetryUnless has been destructed');
+        if (! $this->expectsSuccess) {
+            $this->rejectEventualDeferred('RetryUnless has been destructed');
+        }
 
         $this->loop = null;
     }
